@@ -1,4 +1,5 @@
 import datetime
+import check
 import os,sys,inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 sbgan_dir = os.path.dirname(os.path.dirname(current_dir))
