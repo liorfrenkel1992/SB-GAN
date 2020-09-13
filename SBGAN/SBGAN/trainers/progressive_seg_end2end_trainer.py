@@ -163,6 +163,7 @@ class ProgressiveTrainer:
 
 
         z = torch.randn(self.opt.batchSize, 512)
+        print('c. end2end:', self.opt.end2endtri)
         G_losses, fake_seg = self.end2end_model(iteration, global_iteration, dim_ind, z, seg_mc.cpu(), seg.cpu(), im.cpu(), disp.cpu(),
                 scaling, interpolate=phase == "fade", mode='generator_end2end')
         
