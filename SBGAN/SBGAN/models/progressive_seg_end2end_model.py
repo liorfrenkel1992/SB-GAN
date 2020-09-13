@@ -156,7 +156,7 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                     with torch.no_grad():
                         print('stage1')
                         fake_disp_f, _ = self.pix2pix_model.generate_fake(x_fake_mc_up, real_disp)
-                        semantics = torch.cat((x_fake_mc_up, fake_disp_f.detach()), dim=1, requires_grad=False)
+                        semantics = torch.cat((x_fake_mc_up, fake_disp_f.detach()), dim=1)
                         print('finished first block')
                     torch.cuda.empty_cache()
                     fake_im_f, _ = self.pix2pix_model2.generate_fake(semantics.detach(), real_image, triple=True)
