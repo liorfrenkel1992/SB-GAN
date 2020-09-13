@@ -183,8 +183,10 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
             if self.opt.end2endtri:
                 print('got to second semantics')
                 semantics = torch.cat((real_semantics, real_disp), dim=1)
+                torch.cuda.empty_cache()
                 g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
-                    semantics, real_image, triple=True)
+                    semantics.detach(), real_image, triple=True)
+                print('finished last part')
             G_losses['GAN_ffr'] = g_loss['GAN'] 
             if not self.opt.no_ganFeat_loss:
                 G_losses['GAN_Feat'] = g_loss['GAN_Feat']
