@@ -140,8 +140,13 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
         G_losses = {}
 
         #fake seg
-        g_loss_fake, fake_semantics = self.compute_generator_loss(iteration, global_iteration, dim_ind,scaling, 
-                                interpolate, z=z, hard=hard)
+        if self.opt.last_blk:
+            with torch.no_grad():
+                g_loss_fake, fake_semantics = self.compute_generator_loss(iteration, global_iteration, dim_ind,scaling, 
+                                        interpolate, z=z, hard=hard)
+        else:
+            g_loss_fake, fake_semantics = self.compute_generator_loss(iteration, global_iteration, dim_ind,scaling, 
+                                    interpolate, z=z, hard=hard)
         if self.opt.update_progan:
             G_losses['GAN_pro'] = g_loss_fake * self.opt.lambda_pgan
 
