@@ -176,6 +176,7 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                 else:
                     fake_im_f, _ = self.pix2pix_model.generate_fake(x_fake_mc_up, real_disp)
             pred_fake, pred_real = self.discriminate(fake_im_f, real_image)
+            print('finished discriminate')
             G_losses['GAN_fff'] = self.opt.lambda_D2*self.pix2pix_model.criterionGAN(pred_fake, True,
                                                 for_discriminator=False)
 
