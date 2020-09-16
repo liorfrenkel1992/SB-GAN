@@ -159,13 +159,10 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
             if self.opt.last_blk:
                 if self.opt.end2endtri:
                     with torch.no_grad():
-                        print('stage1')
                         fake_disp_f, _ = self.pix2pix_model.generate_fake(x_fake_mc_up, real_disp)
                         semantics = torch.cat((x_fake_mc_up, fake_disp_f.detach()), dim=1)
-                        print('finished first block')
                     torch.cuda.empty_cache()
                     fake_im_f, _ = self.pix2pix_model2.generate_fake(semantics.detach(), real_image, triple=True)
-                    print('finished second block')
                 else:
                     fake_im_f, _ = self.pix2pix_model.generate_fake(x_fake_mc_up, real_disp)
             else:
@@ -176,7 +173,6 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                 else:
                     fake_im_f, _ = self.pix2pix_model.generate_fake(x_fake_mc_up, real_disp)
             pred_fake, pred_real = self.discriminate(fake_im_f, real_image)
-            print('finished discriminate')
             G_losses['GAN_fff'] = self.opt.lambda_D2*self.pix2pix_model.criterionGAN(pred_fake, True,
                                                 for_discriminator=False)
 
@@ -187,18 +183,16 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                 g_loss, fake_im_r = self.pix2pix_model.compute_generator_loss(
                     real_semantics, real_disp)
             if self.opt.end2endtri:
-                print('got to second semantics')
                 if self.opt.last_blk:
                     with torch.no_grad():
                         semantics = torch.cat((real_semantics.detach(), real_disp.detach()), dim=1)
-                        torch.cuda.empty_cache()
+                        #torch.cuda.empty_cache()
                         g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
                             semantics.detach(), real_image.detach(), triple=True)
                 else:
                     semantics = torch.cat((real_semantics, real_disp), dim=1)
                     g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
                         semantics, real_image, triple=True)
-                print('finished last part')
             G_losses['GAN_ffr'] = g_loss['GAN'] 
             if not self.opt.no_ganFeat_loss:
                 G_losses['GAN_Feat'] = g_loss['GAN_Feat']
