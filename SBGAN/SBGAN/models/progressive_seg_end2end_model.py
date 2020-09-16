@@ -188,10 +188,16 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                     real_semantics, real_disp)
             if self.opt.end2endtri:
                 print('got to second semantics')
-                semantics = torch.cat((real_semantics.detach(), real_disp.detach()), dim=1)
-                torch.cuda.empty_cache()
-                g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
-                    semantics.detach(), real_image.detach(), triple=True)
+                if self.opt.last_blk:
+                    with torch.no_grad():
+                        semantics = torch.cat((real_semantics.detach(), real_disp.detach()), dim=1)
+                        torch.cuda.empty_cache()
+                    g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
+                        semantics.detach(), real_image.detach(), triple=True)
+                else:
+                    semantics = torch.cat((real_semantics, real_disp), dim=1)
+                    g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
+                        semantics, real_image, triple=True)
                 print('finished last part')
             G_losses['GAN_ffr'] = g_loss['GAN'] 
             if not self.opt.no_ganFeat_loss:
