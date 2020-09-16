@@ -192,8 +192,8 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                     with torch.no_grad():
                         semantics = torch.cat((real_semantics.detach(), real_disp.detach()), dim=1)
                         torch.cuda.empty_cache()
-                    g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
-                        semantics.detach(), real_image.detach(), triple=True)
+                        g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
+                            semantics.detach(), real_image.detach(), triple=True)
                 else:
                     semantics = torch.cat((real_semantics, real_disp), dim=1)
                     g_loss, fake_im_r = self.pix2pix_model2.compute_generator_loss(
