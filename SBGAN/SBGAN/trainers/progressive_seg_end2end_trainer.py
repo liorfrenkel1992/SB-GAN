@@ -248,7 +248,8 @@ class ProgressiveTrainer:
                     (D_losses['D_Fake_ffr']).mean(),global_iteration,
                 )
 
-        if self.opt.update_progan_w_D2 or self.opt.update_pix2pix_w_D2 or self.opt.update_pix2pix:
+        #if self.opt.update_progan_w_D2 or self.opt.update_pix2pix_w_D2 or self.opt.update_pix2pix:
+        if self.opt.update_pix2pix:
             self.progressive_model.writer.add_scalar(
                     "loss/D_real",
                     (D_losses['D_real']).mean(),global_iteration,
