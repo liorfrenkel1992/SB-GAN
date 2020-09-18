@@ -336,8 +336,9 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
             pred_fake, pred_real = self.discriminate(fake_im_f, real_image)
             D_losses['D_Fake_fff'] = self.opt.lambda_D2*self.pix2pix_model.criterionGAN(pred_fake, False,
                                                    for_discriminator=True)
-            D_losses['D_real'] += self.opt.lambda_D2*self.pix2pix_model.criterionGAN(pred_real, True,
-                                                   for_discriminator=True)
+            if self.opt.update_pix2pix:
+                D_losses['D_real'] += self.opt.lambda_D2*self.pix2pix_model.criterionGAN(pred_real, True,
+                                                       for_discriminator=True)
         return D_losses
     
 
