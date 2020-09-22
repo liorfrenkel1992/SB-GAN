@@ -370,7 +370,7 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
                 input_semantics = torch.cat((x_fake_mc_up, fake_disp_f), dim=1)
                 fake_im_f, _ = self.pix2pix_model2.generate_fake(input_semantics, real_im, triple=True)
 
-        return x_fake,fake_im_f, fake_im_r
+        return x_fake,fake_im_f, fake_im_r, fake_disp_f
         
 
 
