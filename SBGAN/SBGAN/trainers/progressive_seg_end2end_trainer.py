@@ -376,13 +376,17 @@ class ProgressiveTrainer:
                         if phase == "fade"
                         else None
                     )
-                    fake_seg, fake_im_f, fake_im_r = self.end2end_model(iteration, global_iteration, dim_ind, fixed_z, seg_mc.cpu(), seg.cpu(), im.cpu(), disp.cpu(), scaling, mode='inference')
+                    fake_seg, fake_im_f, fake_im_r, fake_disp = self.end2end_model(iteration, global_iteration, dim_ind, fixed_z, seg_mc.cpu(), seg.cpu(), im.cpu(), disp.cpu(), scaling, mode='inference')
                     grid = make_grid(fake_seg, nrow=4, normalize=True, range=(-1, 1))
                     self.progressive_model.writer.add_image("fake", grid, global_iteration)
 
                     fake_im_f = fake_im_f.cpu()
                     grid = make_grid(fake_im_f, nrow=4, normalize=True, range=(-1, 1))
                     self.progressive_model.writer.add_image("fake_im_ff", grid, global_iteration)
+                    
+                    fake_disp = fake_disp.cpu()
+                    grid = make_grid(fake_disp, nrow=4, normalize=True, range=(-1, 1))
+                    self.progressive_model.writer.add_image("fake_disp", grid, global_iteration)
 
                     fake_im_r = fake_im_r.cpu()
                     grid = make_grid(fake_im_r, nrow=4, normalize=True, range=(-1, 1))
