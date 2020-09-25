@@ -57,11 +57,11 @@ class Pix2PixModel(torch.nn.Module):
             return d_loss
         elif mode == 'end2end_discriminator':
             d_loss, fake_image = self.compute_end2end_discriminator_loss(
-               fake_semantics, input_semantics, real_image)
+               fake_semantics, input_semantics, real_image, triple=triple)
             return d_loss, fake_image
         elif mode == 'end2end_generator':
             g_loss, fake_image = self.compute_end2end_generator_loss(
-                fake_semantics, input_semantics, real_image)
+                fake_semantics, input_semantics, real_image, triple=triple)
             return g_loss, fake_image
         elif mode == 'encode_only':
             z, mu, logvar = self.encode_z(real_image)
@@ -256,7 +256,7 @@ class Pix2PixModel(torch.nn.Module):
 
 
 
-    def discriminate_pairs(self, fake_semantics, fake_image, real_semantics, real_image):
+    def discriminate_pairs(self, fake_semantics, fake_image, real_semantics, real_image, triple=False):
         fake_concat = torch.cat([fake_semantics, fake_image], dim=1)
         real_concat = torch.cat([real_semantics, real_image], dim=1)
 
@@ -265,9 +265,12 @@ class Pix2PixModel(torch.nn.Module):
         # statistics in fake and real images.
         # So both fake and real images are fed to D all at once.
         fake_and_real = torch.cat([fake_concat, real_concat], dim=0)
-
-        discriminator_out = self.netD(fake_and_real)
-
+        
+        if triple:
+            discriminator_out = self.netD_1(fake_and_real)
+        else:
+            discriminator_out = self.netD(fake_and_real)
+   
         pred_fake, pred_real = self.divide_pred(discriminator_out)
 
         return pred_fake, pred_real
@@ -296,14 +299,14 @@ class Pix2PixModel(torch.nn.Module):
 
         return pred_fake, pred_real
 
-    def compute_end2end_generator_loss(self, fake_semantics, real_semantics, real_image):
+    def compute_end2end_generator_loss(self, fake_semantics, real_semantics, real_image, triple=False):
         G_losses = {}
         
         fake_image, KLD_loss = self.generate_fake(
-            fake_semantics, real_image, compute_kld_loss=self.opt.use_vae)
+            fake_semantics, real_image, compute_kld_loss=self.opt.use_vae, triple=triple)
 
         pred_fake, pred_real = self.discriminate_pairs(
-            fake_semantics.detach(), fake_image, real_semantics, real_image)
+            fake_semantics.detach(), fake_image, real_semantics, real_image, triple=triple)
 
         G_losses['GAN'] = self.criterionGAN(pred_fake, True,
                                             for_discriminator=False)
@@ -326,7 +329,7 @@ class Pix2PixModel(torch.nn.Module):
 
         return G_losses, fake_image
 
-    def compute_end2end_discriminator_loss(self, fake_semantics, real_semantics, real_image):
+    def compute_end2end_discriminator_loss(self, fake_semantics, real_semantics, real_image, triple=False):
 
         D_losses = {}
         with torch.no_grad():
@@ -336,7 +339,7 @@ class Pix2PixModel(torch.nn.Module):
             fake_semantics = fake_semantics.detach()
             fake_semantics.requires_grad_()
 
-        pred_fake, pred_real = self.discriminate_pairs(fake_semantics, fake_im_f, real_semantics, real_image)
+        pred_fake, pred_real = self.discriminate_pairs(fake_semantics, fake_im_f, real_semantics, real_image, triple=triple)
 
         D_losses['D_Fake_fff'] = self.criterionGAN(pred_fake, False,
                                                for_discriminator=True)
