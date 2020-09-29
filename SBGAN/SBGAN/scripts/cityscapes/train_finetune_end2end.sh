@@ -16,7 +16,7 @@ dataroot=/data/input
 #dataroot=datasets/cityscapes
 ckpt=/data
 #ckpt=weights
-spade_epoch=291
+spade_epoch=200
 spade_triple_epoch=200
 pro_iter=597527
 #pro_iter=298900
@@ -71,5 +71,5 @@ CUDA_VISIBLE_DEVICES=$gpu_ids python SBGAN/trainers/progressive_seg_end2end_trai
   --load_size ${load_size} --crop_size ${crp_size} --checkpoints_dir ${ckpt}  --nums_fid ${nums_fid} \
   --batchSize ${bs} --which_iter_D2 ${D2_iter} --which_epoch ${spade_epoch} --which_iter ${pro_iter}  --lambda_pgan ${lambda} \
   --niter ${niter} --niter_decay ${niterd} --eval_freq ${eval_freq} --save_epoch_freq ${save_freq} \
-  --which_triple_epoch ${spade_triple_epoch} --tf_log --end2end --pretrain_D2 --continue_train --cont_train --no_instance --contain_dontcare_label --end2endtri --last_blk
+  --which_triple_epoch ${spade_triple_epoch} --tf_log --end2end --pretrain_D2 --continue_train --cont_train --no_instance --contain_dontcare_label --end2endtri #--last_blk
   
