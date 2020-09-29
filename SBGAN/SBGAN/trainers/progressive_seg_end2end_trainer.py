@@ -367,6 +367,7 @@ class ProgressiveTrainer:
                 seg, seg_mc, im, disp = self.call_next_batch(seg,im,disp)
                 print('epoch #: ', epoch)
                 G_losses = self.step_generator_end2end(iteration, global_iteration, dim_ind, seg_mc, seg, im, disp, scaling, phase)
+                print('succeed generator')
                 D_losses = self.step_discriminator_end2end(iteration, global_iteration, dim_ind, seg_mc, seg, im, disp, scaling, phase)
                 # print('disc', time.time()-t3)
                 global_iteration += 1
@@ -677,7 +678,7 @@ if __name__ == "__main__":
 
         if opt.end2end:
             #opt.end2endtri = True
-            opt.update_pix2pix = False
+            opt.update_pix2pix = True
             opt.update_pix2pix_w_D2 = True
             opt.update_progan = True
             opt.update_progan_w_D2 = True
