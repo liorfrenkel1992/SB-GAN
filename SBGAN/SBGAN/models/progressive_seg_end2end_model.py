@@ -83,8 +83,8 @@ class ProgressiveSegEnd2EndModel(torch.nn.Module):
             return d_loss
 
         if mode == 'inference':
-            fake_seg, fake_im_f, fake_im_r = self.log_images(im_mc, im, disp, z, global_iteration, scaling, alpha)
-            return fake_seg, fake_im_f, fake_im_r
+            fake_seg, fake_im_f, fake_im_r, fake_disp = self.log_images(im_mc, im, disp, z, global_iteration, scaling, alpha)
+            return fake_seg, fake_im_f, fake_im_r, fake_disp
 
 
     def discriminate(self, fake_image, real_image):
