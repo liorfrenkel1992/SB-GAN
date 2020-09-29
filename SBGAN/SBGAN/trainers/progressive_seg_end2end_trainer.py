@@ -678,7 +678,7 @@ if __name__ == "__main__":
 
         if opt.end2end:
             #opt.end2endtri = True
-            opt.update_pix2pix = True
+            opt.update_pix2pix = False
             opt.update_pix2pix_w_D2 = True
             opt.update_progan = True
             opt.update_progan_w_D2 = True
